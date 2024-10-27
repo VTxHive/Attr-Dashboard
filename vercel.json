@@ -2,11 +2,8 @@
   "version": 2,
   "builds": [
     {
-      "src": "/main.py",
-      "use": "@vercel/python",
-      "config": {
-        "includeFiles": ["static/css/**", "templates/**"]
-      }
+      "src": "main.py",
+      "use": "@vercel/python"
     }
   ],
   "routes": [
@@ -14,5 +11,6 @@
       "src": "/(.*)",
       "dest": "main.py"
     }
-  ]
+  ],
+  "regions": ["bom1"]  // Using Mumbai since your domain suggests Indian hosting
 }
