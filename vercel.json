@@ -12,5 +12,5 @@
       "dest": "main.py"
     }
   ],
-  "regions": ["bom1"]  // Using Mumbai since your domain suggests Indian hosting
+  "regions": ["bom1"] 
 }
