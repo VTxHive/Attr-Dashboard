@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Toll Plaza</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/edit.css') }}">
+</head>
+<body>
+    <div class="header">
+        <nav class="nav-bar">
+            <a href="{{ url_for('home') }}" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Back to Dashboard
+            </a>
+        </nav>
+        <h1>
+            <i class="fas fa-edit"></i>
+            Edit Toll Plaza <span class="plaza-code">#{{ plaza.t_code }}</span>
+        </h1>
+    </div>
+
+    <div class="container">
+        <form method="POST" class="toll-form">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="name">
+                        <i class="fas fa-signature"></i>
+                        Name
+                    </label>
+                    <input type="text" id="name" name="name" value="{{ plaza.t_name }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="concessionaire_type">
+                        <i class="fas fa-tag"></i>
+                        Concessionaire Type
+                    </label>
+                    <input type="text" id="concessionaire_type" name="concessionaire_type" value="{{ plaza.concessionaire_type }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="plaza_type">
+                        <i class="fas fa-road"></i>
+                        Plaza Type
+                    </label>
+                    <input type="text" id="plaza_type" name="plaza_type" value="{{ plaza.t_type }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="plaza_sub_type">
+                        <i class="fas fa-code-branch"></i>
+                        Plaza Sub Type
+                    </label>
+                    <input type="text" id="plaza_sub_type" name="plaza_sub_type" value="{{ plaza.t_sub_type }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="state">
+                        <i class="fas fa-map"></i>
+                        State
+                    </label>
+                    <input type="text" id="state" name="state" value="{{ plaza.t_state }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="city">
+                        <i class="fas fa-city"></i>
+                        City
+                    </label>
+                    <input type="text" id="city" name="city" value="{{ plaza.t_city }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="concessionaire">
+                        <i class="fas fa-building"></i>
+                        Concessionaire
+                    </label>
+                    <input type="text" id="concessionaire" name="concessionaire" value="{{ plaza.concessionaire_name }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="geo_codes">
+                        <i class="fas fa-location-dot"></i>
+                        Geo Codes
+                    </label>
+                    <input type="text" id="geo_codes" name="geo_codes" value="{{ plaza.geo_code }}" required>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-save"></i>
+                    Update Toll Plaza
+                </button>
+                <a href="{{ url_for('home') }}" class="cancel-btn">
+                    <i class="fas fa-times"></i>
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
