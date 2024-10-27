@@ -35,10 +35,12 @@ def home():
         except Error as e:
             print(f"Error: {e}")
 
-    # Create response with caching headers
+    # Create response without caching for dynamic data
     response = make_response(render_template('home.html', plazas=plazas))
-    # Cache for 1 minute, allow serving stale version while revalidating
-    response.headers['Cache-Control'] = 'public, max-age=60, stale-while-revalidate=30'
+    # Set no-cache for dynamic data
+    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
     return response
 
 
