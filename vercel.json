@@ -2,16 +2,14 @@
   "version": 2,
   "builds": [
     {
-      "src": "main.py",
-      "use": "@vercel/python"
+      "src": "/main.py",
+      "use": "@vercel/python",
+      "config": {
+        "includeFiles": ["static/css/**", "templates/**"]
+      }
     }
   ],
   "routes": [
-    {
-      "src": "/static/(.*)",
-      "headers": { "cache-control": "public, max-age=31536000, immutable" },
-      "dest": "/static/$1"
-    },
     {
       "src": "/(.*)",
       "dest": "main.py"

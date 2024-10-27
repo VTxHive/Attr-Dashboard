@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, redirect, url_for, make_response
+# main.py
+from flask import Flask, render_template, request, redirect, url_for
 import mysql.connector
 from mysql.connector import Error
 
@@ -12,13 +13,38 @@ def get_db_connection():
             password='Balvigyan@2024',
             host='www.atts.site',
             database='u321595372_tolltaxsystem',
-            port=3306,
-            connection_timeout=5
+            port=3306
         )
         return connection
     except Error as e:
         print(f"Error connecting to MySQL: {e}")
         return None
+
+
+def init_db():
+    conn = get_db_connection()
+    if conn is not None:
+        try:
+            cursor = conn.cursor(buffered=True)
+
+            # Create toll_plazas table if it doesn't exist
+            cursor.execute('''CREATE TABLE IF NOT EXISTS toll_plazas
+                            (plaza_code VARCHAR(50) PRIMARY KEY,
+                             name VARCHAR(255) NOT NULL,
+                             concessionaire_type VARCHAR(100),
+                             plaza_type VARCHAR(100),
+                             plaza_sub_type VARCHAR(100),
+                             state VARCHAR(100),
+                             city VARCHAR(100),
+                             concessionaire VARCHAR(255),
+                             geo_codes VARCHAR(100))''')
+
+            conn.commit()
+        except Error as e:
+            print(f"Error: {e}")
+        finally:
+            cursor.close()
+            conn.close()
 
 
 @app.route('/')
@@ -30,27 +56,17 @@ def home():
             cursor = conn.cursor(dictionary=True)
             cursor.execute('SELECT * FROM toll_tbl')
             plazas = cursor.fetchall()
+            print(plazas)
             cursor.close()
             conn.close()
         except Error as e:
             print(f"Error: {e}")
+    return render_template('home.html', plazas=plazas)
 
-    # Create response without caching for dynamic data
-    response = make_response(render_template('home.html', plazas=plazas))
-    # Set no-cache for dynamic data
-    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-    response.headers['Pragma'] = 'no-cache'
-    response.headers['Expires'] = '0'
-    return response
 
 
 @app.route('/add', methods=['GET', 'POST'])
 def add():
-    if request.method == 'GET':
-        response = make_response(render_template('pages/add.html'))
-        response.headers['Cache-Control'] = 'no-store'  # Don't cache forms
-        return response
-
     if request.method == 'POST':
         conn = get_db_connection()
         if conn is not None:
@@ -79,34 +95,28 @@ def add():
             except Error as e:
                 print(f"Error: {e}")
                 return f"An error occurred: {str(e)}"
-    return redirect(url_for('home'))
+    return render_template('pages/add.html')
 
+
+# main.py (relevant section with fixes)
 
 @app.route('/edit/<int:plaza_code>', methods=['GET', 'POST'])
 def edit(plaza_code):
-    if request.method == 'GET':
-        conn = get_db_connection()
-        if conn is not None:
-            try:
-                cursor = conn.cursor(dictionary=True)
+    conn = get_db_connection()
+    if conn is not None:
+        try:
+            cursor = conn.cursor(dictionary=True)
+            if request.method == 'GET':
+                # Fetch the existing toll plaza data
                 cursor.execute('SELECT * FROM toll_tbl WHERE t_code = %s', (plaza_code,))
                 plaza = cursor.fetchone()
-                cursor.close()
-                conn.close()
+                print(plaza)
                 if plaza:
-                    response = make_response(render_template('pages/edit.html', plaza=plaza))
-                    response.headers['Cache-Control'] = 'no-store'  # Don't cache forms
-                    return response
-                return "Plaza not found", 404
-            except Error as e:
-                print(f"Error: {e}")
-                return f"An error occurred: {str(e)}"
+                    return render_template('pages/edit.html', plaza=plaza)
+                else:
+                    return "Plaza not found", 404
 
-    if request.method == 'POST':
-        conn = get_db_connection()
-        if conn is not None:
-            try:
-                cursor = conn.cursor()
+            elif request.method == 'POST':
                 cursor.execute('''
                     UPDATE toll_tbl 
                     SET t_name=%s, concessionaire_type=%s, t_type=%s,
@@ -125,12 +135,13 @@ def edit(plaza_code):
                     plaza_code
                 ))
                 conn.commit()
-                cursor.close()
-                conn.close()
                 return redirect(url_for('home'))
-            except Error as e:
-                print(f"Error: {e}")
-                return f"An error occurred: {str(e)}"
+        except Error as e:
+            print(f"Error: {e}")
+            return f"An error occurred: {str(e)}"
+        finally:
+            cursor.close()
+            conn.close()
     return redirect(url_for('home'))
 
 
@@ -150,4 +161,5 @@ def delete(plaza_code):
 
 
 if __name__ == '__main__':
+    init_db()
     app.run(debug=True)
