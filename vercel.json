@@ -11,6 +11,5 @@
       "src": "/(.*)",
       "dest": "main.py"
     }
-  ],
-  "regions": ["bom1"] 
+  ]
 }
