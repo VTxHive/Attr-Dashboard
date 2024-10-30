@@ -1,0 +1,116 @@
+
+.sidebar {
+    position: fixed;
+    left: -500px;
+    top: 0;
+    width: var(--sidebar-width);
+    height: 100vh;
+    background-color: var(--card);
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+    transition: left 0.3s ease;
+    z-index: 0;
+    opacity: 0;
+}
+
+.sidebar.active {
+    left: 0;
+    opacity: 1;
+    z-index: 999;
+    transition: left 0.3s ease;
+}
+
+/* Sidebar Header */
+.sidebar-header {
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    background-color: var(--card);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.sidebar-header h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* Close Button */
+.sidebar-close {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+/* Navigation Links */
+.nav-links {
+    list-style: none;
+    padding: 1rem 0;
+    margin: 0;
+}
+
+.nav-links li a {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    color: var(--text);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    gap: 0.75rem;
+}
+
+.nav-links li a:hover,
+.nav-links li a.active {
+    background-color: var(--background);
+    color: var(--primary);
+}
+
+.nav-links li a i {
+    width: 1.25rem;
+    text-align: center;
+}
+
+/* Menu Trigger Button */
+.menu-trigger {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 0.75rem;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    z-index: 900;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Main Content */
+.main-content {
+    padding: 2rem;
+    transition: margin-left 0.3s ease;
+}
+
+/* Overlay */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    z-index: 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.overlay.active {
+    display: block;
+    opacity: 1;
+    transition: left 0.3s ease;
+}
+

@@ -1,14 +1,17 @@
-:root {
-    --primary: #2563eb;
-    --primary-dark: #1d4ed8;
-    --danger: #dc2626;
-    --danger-dark: #b91c1c;
-    --background: #f8fafc;
-    --card: #ffffff;
-    --text: #1e293b;
-    --border: #e2e8f0;
-    --text-muted: #64748b;
-}
+ :root {
+     --primary: #2563eb;
+     --primary-dark: #1d4ed8;
+     --danger: #dc2626;
+     --danger-dark: #b91c1c;
+     --background: #f8fafc;
+     --card: #ffffff;
+     --text: #1e293b;
+     --border: #e2e8f0;
+     --text-muted: #64748b;
+     --sidebar-width: 250px;
+ }
+
+
 
 * {
     margin: 0;
@@ -28,7 +31,6 @@ body {
     max-width: 1400px;
     margin: 0 auto 2rem;
     display: flex;
-    justify-content: space-between;
     align-items: center;
     animation: slideDown 0.5s ease-out;
 }
@@ -160,12 +162,6 @@ tbody tr:hover {
 @media (max-width: 768px) {
     body {
         padding: 1rem;
-    }
-
-    .header {
-        flex-direction: column;
-        gap: 1rem;
-        text-align: center;
     }
 
     td, th {
