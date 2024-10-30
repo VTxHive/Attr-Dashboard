@@ -7,61 +7,68 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
 </head>
 <body>
-{% extends "base.html" %}
+    <button class="menu-trigger">
+        <i class="fas fa-bars"></i>
+    </button>
 
-{% block content %}
-<div class="header">
-    <h1><i class="fas fa-toll fa-fw"></i> Toll Plaza Dashboard</h1>
-    <a href="{{ url_for('add') }}" class="add-btn">
-        <i class="fas fa-plus fa-fw"></i> Add Toll Plaza
-    </a>
-</div>
+    <div class="overlay"></div>
 
-<div class="container">
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th>Plaza Code</th>
-                    <th>Name</th>
-                    <th>Concessionaire Type</th>
-                    <th>Plaza Type</th>
-                    <th>Plaza Sub Type</th>
-                    <th>State</th>
-                    <th>City</th>
-                    <th>Concessionaire</th>
-                    <th>Geo Codes</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for plaza in plazas %}
-                <tr>
-                    <td>{{ plaza.t_code }}</td>
-                    <td>{{ plaza.t_name }}</td>
-                    <td>{{ plaza.concessionaire_type }}</td>
-                    <td>{{ plaza.t_type }}</td>
-                    <td>{{ plaza.t_sub_type}}</td>
-                    <td>{{ plaza.t_state }}</td>
-                    <td>{{ plaza.t_city }}</td>
-                    <td>{{ plaza.concessionaire_name }}</td>
-                    <td>{{ plaza.geo_code }}</td>
-                    <td>
-                        <a href="{{ url_for('edit', plaza_code=plaza.t_code) }}" class="btn edit">
-                            <i class="fas fa-edit fa-fw"></i> Edit
-                        </a>
-                        <a href="{{ url_for('delete', plaza_code=plaza.t_code) }}" class="btn delete" onclick="return confirm('Are you sure you want to delete this toll plaza?')">
-                            <i class="fas fa-trash fa-fw"></i> Delete
-                        </a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
-{% endblock %}
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h2 class="text-xl font-bold">Dashboard</h2>
+            <button class="sidebar-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <ul class="nav-links">
+            <li><a href="{{ url_for('home') }}" class="{{ 'active' if request.endpoint == 'home' }}">
+                <i class="fas fa-home fa-fw"></i> Home
+            </a></li>
+            <li><a href="{{ url_for('login') }}">
+                <i class="fas fa-user fa-fw"></i> Login
+            </a></li>
+            <li><a href="{{ url_for('add') }}">
+                <i class="fas fa-plus fa-fw"></i> Add Toll Plaza
+            </a></li>
+            <li><a href="{{ url_for('home') }}">
+                <i class="fas fa-chart-bar fa-fw"></i> Page 2
+            </a></li>
+            <li><a href="{{ url_for('home') }}">
+                <i class="fas fa-cog fa-fw"></i> Page 3
+            </a></li>
+            <li><a href="{{ url_for('home') }}">
+                <i class="fas fa-users fa-fw"></i> Page 1
+            </a></li>
+            <li><a href="{{ url_for('home') }}">
+                <i class="fas fa-file-alt fa-fw"></i> Page 5
+            </a></li>
+        </ul>
+    </nav>
+    {% block content %}{% endblock %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuTrigger = document.querySelector('.menu-trigger');
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.overlay');
+            const sidebarClose = document.querySelector('.sidebar-close');
+
+            function opensidebar() {
+                sidebar.classList.add('active');
+                overlay.classList.add('active');
+            }
+            function closesidebar(){
+                console.log("hello")
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+
+            }
+            menuTrigger.addEventListener('click', opensidebar);
+            sidebarClose.addEventListener('click', closesidebar);
+            overlay.addEventListener('click', closesidebar);
+        });
+    </script>
 </body>
 </html>

@@ -109,7 +109,21 @@ tbody tr:hover {
 .edit:hover {
     background-color: var(--primary-dark);
 }
+.alert-container {
+    margin: 20px;
+}
 
+.alert {
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
 .delete {
     background-color: var(--danger);
     color: white;

@@ -1,10 +1,24 @@
 # main.py
-from flask import Flask, render_template, request, redirect, url_for
+import os
+from functools import wraps
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 import mysql.connector
 from mysql.connector import Error
+from dotenv import load_dotenv
+from datetime import timedelta
+load_dotenv()
 
 app = Flask(__name__)
+app.secret_key = os.getenv('SECRET_KEY')
+app.permanent_session_lifetime = timedelta(hours=1)
 
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user' not in session:
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 def get_db_connection():
     try:
@@ -17,7 +31,7 @@ def get_db_connection():
         )
         return connection
     except Error as e:
-        print(f"Error connecting to MySQL: {e}")
+        print(f"Error connecting to MySQL: {e}" )
         return None
 
 
@@ -63,9 +77,8 @@ def home():
             print(f"Error: {e}")
     return render_template('home.html', plazas=plazas)
 
-
-
 @app.route('/add', methods=['GET', 'POST'])
+@login_required
 def add():
     if request.method == 'POST':
         conn = get_db_connection()
@@ -101,6 +114,7 @@ def add():
 # main.py (relevant section with fixes)
 
 @app.route('/edit/<int:plaza_code>', methods=['GET', 'POST'])
+@login_required
 def edit(plaza_code):
     conn = get_db_connection()
     if conn is not None:
@@ -146,6 +160,7 @@ def edit(plaza_code):
 
 
 @app.route('/delete/<plaza_code>')
+@login_required
 def delete(plaza_code):
     conn = get_db_connection()
     if conn is not None:
@@ -159,6 +174,42 @@ def delete(plaza_code):
             print(f"Error: {e}")
     return redirect(url_for('home'))
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        conn = get_db_connection()
+        if conn is not None:
+            try:
+                cursor = conn.cursor()
+                cursor.execute("SELECT * FROM login WHERE username = %s", (username,))
+                user = cursor.fetchone()
+
+                if user:
+                    if user[2] == password:
+                        session.permanent = True
+                        session['user'] = user
+                        return redirect(url_for('home'))
+                    else:
+                        return render_template('pages/login.html', error='Invalid username or password')
+                else:
+                    return render_template('pages/login.html', error='User Not Found')
+
+            except Error as e:
+                print(f"Error: {e}")
+                return f"An error occurred: {str(e)}"
+            finally:
+                cursor.close()
+                conn.close()
+
+    return render_template('pages/login.html')
+
+@app.route('/logout')
+@login_required
+def logout():
+    session.clear()  # Clears all session data
+    return redirect(url_for('login'))
 
 if __name__ == '__main__':
     init_db()

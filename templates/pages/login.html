@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toll Plaza Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/add.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+</head>
+<body>
+{% block content %}
+<div class="login-container">
+    <div class="login-form">
+        <div class="nav-bar">
+            <h1 class="text-xl font-bold ml-auto">Login</h1>
+        </div>
+        <br>
+
+        {% if session.user %}
+            <div class="welcome-message">
+                <h2>Welcome, {{ session.user[1] }}!</h2>
+                <a href="{{ url_for('logout') }}" class="logout-btn login-submit-btn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        {% else %}
+            {% if error %}
+            <div class="alert alert-danger mb-4">{{ error }}</div>
+            {% endif %}
+
+            <form method="POST" action="{{ url_for('login') }}">
+                <div class="login-grid">
+                    <div class="login-group">
+                        <label for="username">
+                            <i class="fas fa-user"></i> Username
+                        </label>
+                        <input type="text" id="username" name="username" required>
+                    </div>
+                    <div class="login-group">
+                        <label for="password">
+                            <i class="fas fa-lock"></i> Password
+                        </label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                </div>
+                <div class="login-actions">
+                    <button type="submit" class="login-submit-btn">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+                    <a href="{{ url_for('home') }}" class="login-cancel-btn">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+</body>
+</html>
