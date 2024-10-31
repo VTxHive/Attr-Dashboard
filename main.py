@@ -6,11 +6,13 @@ import mysql.connector
 from mysql.connector import Error
 from dotenv import load_dotenv
 from datetime import timedelta
+
 load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')
 app.permanent_session_lifetime = timedelta(hours=1)
+
 
 def login_required(f):
     @wraps(f)
@@ -18,7 +20,9 @@ def login_required(f):
         if 'user' not in session:
             return redirect(url_for('login'))
         return f(*args, **kwargs)
+
     return decorated_function
+
 
 def get_db_connection():
     try:
@@ -31,34 +35,8 @@ def get_db_connection():
         )
         return connection
     except Error as e:
-        print(f"Error connecting to MySQL: {e}" )
+        print(f"Error connecting to MySQL: {e}")
         return None
-
-
-def init_db():
-    conn = get_db_connection()
-    if conn is not None:
-        try:
-            cursor = conn.cursor(buffered=True)
-
-            # Create toll_plazas table if it doesn't exist
-            cursor.execute('''CREATE TABLE IF NOT EXISTS toll_plazas
-                            (plaza_code VARCHAR(50) PRIMARY KEY,
-                             name VARCHAR(255) NOT NULL,
-                             concessionaire_type VARCHAR(100),
-                             plaza_type VARCHAR(100),
-                             plaza_sub_type VARCHAR(100),
-                             state VARCHAR(100),
-                             city VARCHAR(100),
-                             concessionaire VARCHAR(255),
-                             geo_codes VARCHAR(100))''')
-
-            conn.commit()
-        except Error as e:
-            print(f"Error: {e}")
-        finally:
-            cursor.close()
-            conn.close()
 
 
 @app.route('/')
@@ -76,6 +54,7 @@ def home():
         except Error as e:
             print(f"Error: {e}")
     return render_template('home.html', plazas=plazas)
+
 
 @app.route('/add', methods=['GET', 'POST'])
 @login_required
@@ -174,6 +153,7 @@ def delete(plaza_code):
             print(f"Error: {e}")
     return redirect(url_for('home'))
 
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -205,12 +185,13 @@ def login():
 
     return render_template('pages/login.html')
 
+
 @app.route('/logout')
 @login_required
 def logout():
     session.clear()  # Clears all session data
     return redirect(url_for('login'))
 
+
 if __name__ == '__main__':
-    init_db()
     app.run(debug=True)
